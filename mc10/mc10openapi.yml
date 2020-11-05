@@ -1,0 +1,1891 @@
+openapi: "3.0.1"
+info:
+  title: "MC10 BioStamp® nPoint™ API"
+  version: 1.0.0
+  description: |-
+    The MC10 API is intended for customers who want to work with BioStamp®
+    nPoint™ data using their own tools and methods. It is meant to supplement,
+    not replace, MC10's FDA-regulated products, including the BioStamp® nPoint™
+    Investigator Portal and BioStamp® nPoint™ Link app.
+servers:
+  - url: https://mc10cloud.com/api/v1
+    description: production
+paths:
+  /users/login/email:
+    post:
+      description: |-
+        Generate a user object containing an access token and expiration timestamp
+      operationId: createAccessToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAccessTokenRequest"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateAccessTokenResponse"
+  /studies/{studyId}/annotations/{annotationId}/questions:
+    get:
+      operationId: GetAnnotationQA
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "annotationId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /archives/{studyId}/subjects/{subjectId}/annotations:
+    get:
+      operationId: DownloadAnnotationsCSV
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "subjectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /studies/{studyId}/daily_recording_stats:
+    get:
+      operationId: getStudyDailyRecordingStats
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetRecordingStatsbyDay"
+  /studies/{studyId}/recordings:
+    get:
+      operationId: getStudyRecordings
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetStudyRecording"
+  /studies/{studyId}/fault_stats:
+    get:
+      operationId: Equipment Fault Stats
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /studies/{studyId}/subjects/{subjectId}/tokens:
+    post:
+      description: |-
+        Generate a subject sign-in token for the BioStamp® nPoint™ Link app. 
+        This endpoint applies to studies run in the remote setting.
+      operationId: createStudySubjectToken
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "subjectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateStudySubjectTokenRequest"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateStudySubjectTokenResponse"
+  /archives/${studyId}/archive:
+    post:
+      description: |-
+        Request a new "export" ZIP file, which contains study metadata and analytics for all subjects as of the time requested, in CSV format. This endpoint returns no data; rather, the system will send you an email when the export file is ready, typically within a few minutes.
+      operationId: requestExportFile
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Empty"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"              
+  /archives/{studyId}/subjects/{subjectId}/metrics:
+    get:
+      operationId: getSubjectMetrics
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "subjectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /studies/{studyId}/recording_stats:
+    get:
+      operationId: getStudyRecordingStats
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetRecordingStats"
+  /studies/{studyId}/subjects/{subjectId}/annotations:
+    get:
+      operationId: GetAnnotations
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "subjectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "from"
+          in: "query"
+          required: false
+          schema:
+            type: "number"
+        - name: "to"
+          in: "query"
+          required: false
+          schema:
+            type: "number"
+        - name: "type"
+          in: "query"
+          required: false
+          schema:
+            type: "string"    
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /studies/{studyId}/subjects/{subjectId}/data:
+    get:
+      operationId: getSubjectData
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "subjectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "from"
+          in: "query"
+          required: true
+          schema:
+            type: "number"  
+        - name: "to"
+          in: "query"
+          required: true
+          schema:
+            type: "number"
+        - name: "deviceId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+        - name: "tsMicros"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetRecordingData"
+  /archives/{studyId}/archive:
+    post:
+      operationId: RequestExportFile
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /studies/{studyId}/subjects/{subjectId}/pipelines/{pipelineId}/channels:
+    get:
+      operationId: getPipelineChannels
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "subjectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "pipelineId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "masterId"
+          in: "query"
+          required: true
+          schema:
+            type: "string" 
+        - name: "from"
+          in: "query"
+          required: true
+          schema:
+            type: "number" 
+        - name: "to"
+          in: "query"
+          required: true
+          schema:
+            type: "number"   
+        - name: "interval"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"     
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetChannelResponse"
+  /studies/{studyId}/events:
+    get:
+      operationId: getEvents
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "from"
+          in: "query"
+          required: false
+          schema:
+            type: "number"
+        - name: "to"
+          in: "query"
+          required: false
+          schema:
+            type: "number"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetEventResponse"             
+                 
+  /studies/{studyId}/subjects:
+    get:
+      operationId: GetSubjects
+      parameters:
+        - name: "studyId"
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetSubjectsResponse"
+    post:
+      operationId: CreateSubject
+      description: |-
+        Add a subject to a study.
+        The property displayName (called "Subject ID" in BioStamp® nPoint™) is required 
+        and must be unique to the study. The properties weight and height are optional 
+        and expressed in kilograms and meters, respectively. The property gender is 
+        optional; if provided, it must be "MALE" or "FEMALE". The property age is 
+        optional; if provided, it must be 18 or greater. The property metadataFields 
+        (an array of key-value pairs) should correspond to subjectMetadataFields for 
+        the associated study. The property timezone is required (see Dates and Times 
+        for acceptable values).
+      parameters:
+        - name: studyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSubjectRequest"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateSubjectResponse"
+                
+              
+  /studies/{studyId}/subjects/{subjectId}/pipelines/metrics:
+    get:
+      operationId: GetMetrics
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "subjectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetMetricsResponse"
+  /studies/{studyId}/subjects/{subjectId}:
+    get:
+      operationId: GetSubject
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "subjectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetSubjectResponse"
+  /archives/{studyId}/subjects/{subjectId}/days/{date}/channels:
+    get:
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "date"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "subjectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /studies/{studyId}/subjects/{subjectId}/recordings:
+    get:
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "subjectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetRecordingMetadataforSubject"
+  /studies/{studyId}/subjects/{subjectId}/annotations/{annotationId}:
+    get:
+      operationId: GetAnnotation
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "annotationId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "subjectId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /studies/{studyId}:
+    get:
+      operationId: GetStudy
+      parameters:
+        - name: "studyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetStudy"
+  /accounts/{accountId}/studies:
+    post:
+      description: |-
+       Associate a group to a study as the study is created.
+       This endpoint allows a user to create a new study
+       within his or her scope of visibility..
+      operationId: AssociateGroupToNewStudy
+      parameters:
+        - name: "accountId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssociateGroupRequest"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssociateGroupResponse"   
+    get:
+      operationId: GetStudies
+      parameters:
+        - name: "accountId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetStudies"
+     
+                
+  /accounts/{accountId}/groups:
+    get:
+     operationId: ListGroups
+     parameters:
+       - name: "accountId"
+         in: path
+         required: true
+         schema:
+           type: "string"
+     responses:
+       200:
+         description: "200 response"
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/ListGroupsResponse"
+  /users/{userId}/groups/{groupId}:
+    put:
+      description: |-
+       Add a user to a group.
+       This endpoint may be called only by another user in the group.
+      operationId: AddUserToGroup
+      parameters:
+        - name: "userId"
+          in: path
+          required: true
+          schema:
+           type: string
+        - name: "groupId"
+          in: path
+          required: true
+          schema:
+           type: string
+      responses:
+        204:
+          description: "204 (No Content)"
+    delete:
+      description: |-
+       Remove User from Group.
+       This endpoint may be called only by another user in the group.
+      operationId: RemoveUserFromGroup
+      parameters:
+        - name: "userId"
+          in: path
+          required: true
+          schema:
+           type: string
+        - name: "groupId"
+          in: path
+          required: true
+          schema:
+           type: string
+      responses:
+        202:
+          description: "202 Accepted" 
+  /studies/{studyId}/groups/{groupId}:
+    put:
+      description: |-
+       Associate a group to a study that already exists.
+       This endpoint may be called only by other users in groups associated to the study.
+      operationId: AssociateGroupToExistingStudy
+      parameters:
+        - name: "studyId"
+          in: path
+          required: true
+          schema:
+           type: string
+        - name: "groupId"
+          in: path
+          required: true
+          schema:
+           type: string
+      responses:
+        204:
+          description: "204 (No Content)"
+    delete:
+      description: |-
+       Disassociate a group from a study. 
+       This endpoint may be called only by other users in groups associated to the study.
+       This action will fail if it results in a study with no groups.
+      operationId: DisassociateGroupfromStudy
+      parameters:
+        - name: "studyId"
+          in: path
+          required: true
+          schema:
+           type: string
+        - name: "groupId"
+          in: path
+          required: true
+          schema:
+           type: string
+      responses:
+        202:
+          description: "202 Accepted" 
+components:
+  schemas:
+    Empty:
+      title: "Empty Schema"
+      type: "object"
+    CreateSubjectRequest:
+       title: "Subject Request Schema"
+       type: "object"
+       properties:
+        age: 
+          type: "integer"
+        displayName:
+          type: "string"
+        gender:
+          type: "string"
+        height:
+          type: "number"
+        metadataFields:
+          type: array
+          items:
+            type: object
+            properties:
+              displayName: 
+                type: string
+              value: 
+                type: string
+        timezone:
+          type: "string"
+        weight:
+          type: "number"
+          example:
+            age: 46
+            displayName: S-123-456
+            gender: MALE
+            height: 1.7526
+            metadataFields:
+              - displayName: Dominant Hand
+                value: RIGHT
+            timezone: US/Eastern
+            weight: 71.2141
+    CreateSubjectResponse:
+       title: "Subject Response Schema"
+       type: "object"
+       properties:
+        id:
+          type: string
+        links:
+          type: array
+          items:
+            type: object
+            properties:
+              href:
+                type: string
+              rel: 
+                type: string
+       example:
+        id: "7635dda0-6d00-11e9-94b9-e9750c9818f0"
+        links:
+          - href: "/v1/studies/3213d920-468f-11e9-98d1-c23a677524f2/subjects  /7635dda0-6d00-11e9-94b9-e9750c9818f0"
+            rel: "self"
+    ListGroupsResponse:
+       title: "List Groups Schema Response"
+       type: array
+       items:
+         type: object
+         properties:
+          accountId:
+            type: string
+          displayName:
+            type: string
+          id:
+            type: string
+       example:
+        items:
+          - accountId: "5d3b5950-1b00-11e7-8464-0a624d7022db"
+            displayName: "Everyone"
+            id: "5ede05b1-a698-11ea-8caa-30dfd0f0090a"
+    AssociateGroupRequest:
+       title: "Associate Group Schema Request"
+       type: "object"
+       properties:
+        displayName:
+          type: string
+        title:
+         type: string
+        userGroups:
+         type: array
+         items:
+          type: string
+       example:
+         displayName: "Boston Admins"
+         title: "A wicked awesome study"
+         userGroups: "c24932d0-aa64-11ea-9223-30dfd0f0090a"
+    AssociateGroupResponse:
+      title: "Associate Group Schema Response"
+      type: "object"
+      properties:
+        id:
+          type: string
+        links:
+          type: array
+          items:
+            type: "object"
+            properties:
+              href:
+                type: string
+              rel:
+                type: string
+      example:
+       id: "c24932d0-aa64-11ea-9223-30dfd0f0090a"
+       links:
+        - href: "/v1/studies/3975db40-aa67-11ea-9223-30dfd0f0090a"
+          rel: "self"           
+    CreateStudySubjectTokenRequest:
+        title: "Study Subject Token Request Schema"
+        type: "object"
+        properties:
+          studyId:
+            type: string
+          subjectId:
+           type: string
+          token:
+            type: string
+    CreateStudySubjectTokenResponse:
+        title: "Study Subject Token Response Schema"
+        type: "object"  
+        properties:
+          StudyId: 
+            type: string
+          SubjectId:
+            type: string
+          token: 
+            type: string
+            example:
+              studyId: 3e87dc60-d636-11e9-b6a9-861eb462d102
+              subjectId: 16e47e90-d64d-11e9-b470-e22058d3270a
+              token: pqoerwprcbodboiz
+    GetChannelResponse:
+        title: "GetChannel Response Schema"
+        type: "object"
+        properties:
+          channels:
+            type: array
+            items:
+              type: object
+              properties:
+                times: 
+                  type: array
+                  items:
+                    type: number
+                type:
+                  type: string
+                units:
+                  type: string
+                values: 
+                  type: array
+                  items:
+                    anyOf:
+                     - type: object
+                     - type: number
+                     - nullable: true
+        example:
+          channels:
+          - type: "heart_rate"
+            units: "bpm"
+            times: 
+            - 1569344500000
+            - 1569344600000
+            - 1569344700000
+            - 1569344800000
+            - 1569344900000
+            - 1569345000000
+            values:
+            - 73.48617027944415
+            - 75.55844386705404
+            - 78.03754693366709
+            - 77.054579093432
+            - 81.04632152588553
+            - 78.31185913189168                        
+    GetStudyRecording:
+        title: "GetStudyRecording Metadata Response Schema"
+        type: "object"
+        properties:
+          items:
+            type: array
+            items:
+              type: object
+              properties:
+                createdTs:
+                  type: number
+                deviceConfigId:
+                  type: string
+                export:
+                  type: object
+                  properties:
+                    href:
+                      type: string
+                    sizeBytes:
+                      type: integer
+                faults:
+                  type: array
+                  items:
+                    type: object
+                firmwareId:
+                  type: string
+                hardwareId:
+                  type: string
+                id:
+                  type: string
+                physicalConfig:
+                  type: object
+                  properties:
+                    location:
+                      type: string
+                    side:
+                      type: string
+                    signal:
+                      type: string
+                recordingId:
+                  type: integer
+                recordingStartTs:
+                  type: number
+                recordingStopTs:
+                  type: number
+                sensorConfig:
+                  type: object
+                  properties:
+                    afe:
+                      type: object
+                      properties:
+                        gain:
+                          type: integer
+                        rate:
+                          type: integer
+                    gyro:
+                      type: object
+                      properties:
+                        accelLowPower:
+                          type: boolean
+                        accelRange:
+                          type: integer
+                        gyroAutoCalib:
+                          type: boolean
+                        mode:
+                          type: string
+                        periodMs:
+                          type: integer
+                    sensingType:
+                      type: string
+                status:
+                  type: string
+                studyId:
+                  type: string
+                subjectId:
+                  type: string
+                udid:
+                  type: string
+                uploadStartTs:
+                  type: number
+    GetRecordingMetadataforSubject:
+        title: "GetSubjectRecording Metadata Response Schema"
+        type: "object"
+        properties:
+          items:
+            type: array
+            items:
+              type: object
+              properties:
+                createdTs:
+                  type: number
+                deviceConfigId:
+                  type: string
+                export:
+                  type: object
+                  properties:
+                    href:
+                      type: string
+                    sizeBytes:
+                      type: integer
+                faults:
+                  type: array
+                  items:
+                    type: object
+                firmwareId:
+                  type: string
+                hardwareId:
+                  type: string
+                id:
+                  type: string
+                physicalConfig:
+                  type: object
+                  properties:
+                    location:
+                      type: string
+                    side:
+                      type: string
+                    signal:
+                      type: string
+                recordingId:
+                  type: integer
+                recordingStartTs:
+                  type: number
+                recordingStopTs:
+                  type: number
+                sensorConfig:
+                  type: object
+                  properties:
+                    afe:
+                      type: object
+                      properties:
+                        gain:
+                          type: integer
+                        rate:
+                          type: integer
+                    gyro:
+                      type: object
+                      properties:
+                        accelLowPower:
+                          type: boolean
+                        accelRange:
+                          type: integer
+                        gyroAutoCalib:
+                          type: boolean
+                        mode:
+                          type: string
+                        periodMs:
+                          type: integer
+                    sensingType:
+                      type: string
+                status:
+                  type: string
+                studyId:
+                  type: string
+                subjectId:
+                  type: string
+                udid:
+                  type: string
+                uploadStartTs:
+                  type: number
+    GetRecordingData:
+        title: "GetRecordingData Response Schema"
+        type: "object"
+        properties:
+          channels:
+            type: array
+            items: 
+              type: object
+              properties:
+                dimensions:
+                  type: array
+                  items:
+                    type: string
+                recording:
+                  type: object
+                  properties:
+                    createdTs:
+                      type: number
+                    deviceConfigId:
+                      type: string
+                    export:
+                      type: object
+                      properties:
+                        href: 
+                          type: string
+                        sizeBytes: 
+                          type: integer
+                    faults:
+                      type: array
+                      items:
+                        type: object
+                    firmwareId:
+                      type: string
+                    hardwareId:
+                      type: string
+                    id: 
+                      type: string
+                    physicalConfig:
+                      type: object
+                      properties:
+                        location:
+                          type: string
+                        side:
+                          type: string
+                        signal:
+                          type: string
+                    recordingId:
+                      type: string
+                    recordingStartTs:
+                      type: number
+                    recordingStopTs:
+                      type: number
+                    sensorConfig:
+                      type: object
+                      properties:
+                        afe:
+                          type: object
+                          properties: 
+                            gain:
+                              type: integer
+                            rate: 
+                              type: integer
+                        gyro:
+                          type: object
+                          properties:
+                            accelLowPower:
+                              type: boolean
+                            accelRange:
+                              type: integer
+                            gyroAutoCalib:
+                              type: boolean
+                            mode:
+                              type: string
+                            periodMs:
+                              type: integer
+                        sensingType:
+                          type: string
+                    status:
+                      type: string
+                    studyId: 
+                      type: string
+                    subjectId:
+                      type: string
+                    udid:
+                      type: string
+                    uploadStartTs:
+                      type: number
+                times:
+                  type: array
+                  items: 
+                    type: integer
+                type:
+                  type: string
+                values:
+                  type: object
+    GetRecordingStats:
+        title: "GetRecordingStats Response Schema"
+        type: "object"          
+        properties:
+          items:
+            type: array
+            items:
+              type: object
+              properties:
+                countDays:
+                  type: integer
+                countRecordings:
+                  type: integer
+                countSensors:
+                  type: integer
+                durationMs: 
+                  type: integer
+                firstStartTs:
+                  type: number
+                lastStartTs:
+                  type: number
+                lastUploadTs:
+                  type: number
+                subjectId: 
+                  type: string
+    GetRecordingStatsbyDay:
+        title: "Get Recording Daily Request Schema"
+        type: "object"
+        properties:
+          items:
+            type: array
+            items:
+              type: object
+              properties: 
+                countRecordings:
+                  type: integer
+                countSubjects:
+                  type: integer
+                date: 
+                  type: string
+                firstRecStartTs:
+                  type: number
+                lastRecStartTs:
+                  type: number
+                studyId: 
+                  type: string
+                sumDurationMs:
+                  type: integer
+    GetStudies:
+        title: "Get Studies Request Schema"
+        type: "object"
+        properties:
+          accountId:
+            type: string
+          createdTs:
+            type: number
+          displayName:
+            type: string
+          export:
+            type: object
+            properties:
+              href:
+                type: string
+              requestedTs: 
+                type: number
+              sizeBytes:
+                type: integer
+          id:
+            type: string
+          isArchived:
+            type: boolean
+          lifecycleState:
+            type: string
+          subjectMetadataFields:
+            type: array
+            items:
+              type: object
+          title:
+            type: string
+        example:
+            accountId: 5d3b5950-1b00-11e7-8464-0a624d7022db
+            createdTs: 1501252491814
+            displayName: MC10-PTL-101
+            export:
+              href: "/v1/archives/ea6eac60-73a1-11e7-a5b3-0a84ea04a300/href"
+              requestedTs: 1527883949488
+              sizeBytes: 681746
+            id: ea6eac60-73a1-11e7-a5b3-0a84ea04a300
+            isArchived: false
+            lifecycleState: COMPLETE
+            subjectMetadataFields: []
+            title: Internal validation trial for protocol PTL-101
+    GetStudy:
+        title: "GetStudy Response Schema"
+        type: "object"
+        properties:
+          accountId:
+            type: string
+          activities:
+            type: array
+            items:
+              type: object
+              properties:
+                accountId:
+                  type: string
+                createdTs:
+                  type: number
+                displayName:
+                  type: string
+                durationSec:
+                  type: integer
+                id: 
+                  type: string
+                instructions:
+                  type: string
+                mode:
+                  type: string
+                modifiedTs:
+                  type: number
+                order:
+                  type: integer
+                  format: int64
+                pipelineIds: 
+                  type: array
+                  items:
+                    type: object
+                questions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      createdTs:
+                        type: number
+                      id: 
+                        type: string
+                      text:
+                        type: string
+                      type:
+                        type: string
+                      values:
+                        type: array
+                        items:
+                          type: string
+                studyId:
+                  type: string
+          createdTs:
+            type: number
+          deviceConfigs:
+            type: array
+            items:
+              type: object
+              properties:
+                  accountId:
+                    type: string
+                  createdTs:
+                    type: number
+                  id:
+                    type: string
+                  mode: 
+                    type: string
+                  modifiedTs:
+                    type: number
+                  physicalConfig:
+                    type: object
+                    properties: 
+                      location: 
+                        type: string
+                      side: 
+                        type: string
+                      signal:
+                        type: string
+                  pipelineIds:
+                    type: array
+                    items:
+                      type: object
+                  sensorConfig:
+                    type: object
+                    properties:
+                      afe:
+                         type: object
+                         properties:
+                          gain:
+                            type: integer
+                          rate: 
+                            type: integer 
+                      gyro:
+                        type: object
+                        properties:
+                          accelLowPower:
+                            type: boolean
+                          accelRange:
+                            type: integer
+                          gyroAutoCalib:
+                            type: boolean
+                          mode:
+                           type: string
+                          periodMs:
+                            type: integer
+                          sensingType:
+                            type: string
+                  studyId:
+                    type: string
+                  sourceId:
+                    type:
+                      string
+          diaries:
+            type: array
+            items:
+              type: object
+              properties:
+                  accountId:
+                    type: string
+                  createdTs:
+                    type: number
+                  displayName:
+                    type: string
+                  id:
+                    type: string
+                  mode: 
+                    type: string
+                  modifiedTs:
+                    type: number
+                  order:
+                    type: integer
+                  pipelineIds:
+                    type: array
+                    items:
+                      type: object
+                  questions:
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        createdTs:
+                          type: number
+                        id: 
+                          type: string
+                        text:
+                          type: string
+                        type:
+                         type: string
+                        values:
+                          type: array
+                          items:
+                            type: string
+                  studyId:
+                    type: string
+          displayName:
+            type: string
+          export:
+            type: object
+            properties:
+              href:
+                type: string
+              requestedTs:
+                type: number
+              sizeBytes:
+                type: integer
+          id:
+            type: string
+          isArchived:
+            type: boolean
+          lifecycleState:
+            type: string
+          pipelines:
+            type: array
+            items:
+              type: object
+          program:
+            type: object
+          subjectMetadataFields:
+            type: array
+            items:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                type:
+                  type: string 
+                values:
+                  type: array
+                  items:
+                    type: string
+          subjects:
+            type: array
+            items:
+              type: object
+          title:
+            type: string
+                
+    GetSubjectsResponse:
+        title: "GetSubjects Response Schema"
+        type: "object"
+        properties:
+          items:
+            type: array
+            items:
+              properties:
+                accountId:
+                  type: string
+                age:
+                  type: integer
+                createdTs:
+                  type: number
+                displayName:
+                  type: string
+                gender:
+                  type: string
+                height:
+                  type: number
+                id:
+                  type: string
+                isHidden:
+                  type: boolean
+                legaleseVersionAccepted:
+                  type: integer
+                legaleseVersionRequired: 
+                  type: integer
+                metadataFields:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      displayName: 
+                        type: string
+                      value:
+                        type: string
+                modifiedTs:
+                  type: number
+                programStartTs:
+                  type: number
+                studyId:
+                  type: string
+                timezone:
+                  type: string
+                weight:
+                  type: number
+          size: 
+            type: integer
+    GetSubjectResponse:
+        title: "GetSubject Response Schema"
+        type: "object"
+        properties:
+          age:  
+            type: integer
+          createdTs:
+            type: number
+          devices:
+            type: array
+            items:
+              type: object
+          displayName:
+            type: string
+          gender:
+            type: string
+          height: 
+            type: number
+          id:
+            type: string
+          isHidden:
+            type: boolean
+          legaleseVersionAccepted:
+            type: integer
+          legaleseVersionRequired:
+            type: integer
+          metadataFields:
+            type: array
+            items:
+              properties:
+                displayName:
+                  type: string
+                value:
+                  type: string
+          modifiedTs:
+            type: number
+          programStartTs:
+            type: number
+          recordings:
+            type: array
+            items:
+              type: object
+          studyId:
+            type: string
+          timezone:
+            type: string
+          weight:
+            type: number 
+        
+    GetEventResponse:
+        title: "Event Response Schema"
+        type: "object"
+        properties:
+          items:
+            type: array
+            items:
+              type: object
+              properties:
+                accountId:
+                  type: string
+                action:
+                  type: string
+                actualTs:
+                  type: number
+                author:
+                  type: object
+                  properties:
+                    displayName:
+                      type: string
+                    id:
+                      type: string
+                    parentId:
+                      type: string
+                    principalType:
+                      type: string
+                referenceId:
+                  type: string
+                reportedTs:
+                  type: number
+                studyId:
+                  type: string
+        example:
+          items:
+            - reportedTs: 1569351473220
+              actualTs: 1569351452412
+              accountId: "f371fa00-d633-11e9-b470-e22058d3270a"
+              action: "METRICS_PROCESSED"
+              author:
+                displayName: "Jane Doe"
+                id: "fa0968d0-d64c-11e9-b470-e22058d3270a"
+                principalType: "SUBJECT"
+                parentId: "3e87dc60-d636-11e9-b6a9-861eb462d102"
+              referenceId: "bcb42f30-df00-11e9-b6a9-861eb462d102"
+              studyId: "3e87dc60-d636-11e9-b6a9-861eb462d102"         
+    CreateAccessTokenRequest:
+        title: "Access Token Request Schema"
+        type: "object"
+        properties:
+          email:
+            type: string
+          password:
+           type: string
+          accountType:
+            type: string
+    CreateAccessTokenResponse:
+        title: "Access Token Response Schema"
+        type: "object"  
+        properties:
+          user: 
+            type: "object"
+            properties:
+              id:
+                type: string
+              accountId:
+                type: string
+              accounts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    displayName:
+                      type: string
+                    flags:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          type:
+                            type: string
+                    type:
+                      type: string
+                    isDisabled:
+                      type: boolean
+                    createdTs:
+                      type: number 
+              email: 
+                type: string
+              firstName: 
+                type: string
+              lastName: 
+                type: string
+              locale: 
+                type: string
+              timezone: 
+                type: string
+              legaleseVersionRequired: 
+                type: integer
+              isDisabled:
+                type: boolean
+              createdTs: 
+                type: number
+              legaleseVersionAccepted: 
+                type: integer
+          accessToken:
+            type: string
+          expiration:
+            type: integer
+            example:
+              user:
+                id: c3ebb8a0-e2c9-11e9-b470-e22058d3270a
+                accountId: f371fa00-d633-11e9-b470-e22058d3270a
+                accounts:
+                - id: f371fa00-d633-11e9-b470-e22058d3270a
+                  displayName: Medidata Solutions
+                  flags:
+                  - name: e6250028-d77a-11e6-ba38-34363bc793c4
+                    type: ALGORITHM
+                  type: BRC2
+                  isDisabled: false
+                  createdTs: 1568385422752
+                email: rlyons@mdsol.com
+                firstName: Robert
+                lastName: Lyons
+                locale: en_US
+                timezone: US/Eastern
+                legaleseVersionRequired: 1
+                isDisabled: false
+                createdTs: 1569769181482
+                legaleseVersionAccepted: 1
+              accessToken: TmyLKMjH1CTjy2yt
+              expiration: 1587627839841
+    GetMetricsResponse:
+          title: "Metrics Response Schema"
+          type: object
+          properties:
+            items:
+              type: array
+              items:
+                type: object
+                required:
+                - dayStartMsUtc
+                - dataStartTs
+                - dataStopTs
+                - subjectTz
+                - subjectTzOffset
+                - metrics
+                properties:
+                  dayStartMsUtc:
+                    type: number
+                  dataStartTs:
+                    type: number
+                  dataStopTs:
+                    type: number
+                  subjectTz:
+                    type: string
+                  subjectTzOffset:
+                    type: string
+                  metrics:
+                      type: object
+                      properties:
+                        MOVING_AVG_GAIT_CADENCE:
+                          type: number
+                          nullable: true
+                        MOVING_AVG_HR:
+                          type: number
+                          nullable: true
+                        MOVING_AVG_HRV:
+                          type: number
+                          nullable: true
+                        MOVING_AVG_HRV_RMSSD:
+                          type: number
+                          nullable: true
+                        MOVING_COMBINED_ACT_COUNT:
+                          type: number
+                          nullable: true
+                        MOVING_DURATION:
+                          type: number
+                          nullable: true
+                        MOVING_MAX_HR:
+                          type: number
+                          nullable: true
+                        MOVING_MAX_HRV:
+                          type: number
+                          nullable: true
+                        MOVING_MAX_HRV_RMSSD:
+                          type: number
+                          nullable: true
+                        MOVING_MIN_HR:
+                          type: number
+                          nullable: true
+                        MOVING_MIN_HRV:
+                          type: number
+                          nullable: true
+                        MOVING_MIN_HRV_RMSSD:
+                          type: number
+                          nullable: true
+                        MOVING_OTHER_DURATION:
+                          type: number
+                          nullable: true
+                        MOVING_STEPS:
+                          type: integer
+                          nullable: true
+                        MOVING_WALKING_DURATION:
+                          type: number
+                          nullable: true
+                        RESTING_AVG_HR:
+                          type: number
+                          nullable: true
+                        RESTING_AVG_HRV:
+                          type: number
+                          nullable: true
+                        RESTING_AVG_HRV_RMSSD:
+                          type: number
+                          nullable: true
+                        RESTING_COMBINED_ACT_COUNT:
+                          type: number
+                          nullable: true
+                        RESTING_DURATION:
+                          type: number
+                          nullable: true
+                        RESTING_LEANING_POSTURE_DURATION:
+                          type: number
+                          nullable: true
+                        RESTING_LYING_DURATION:
+                          type: number
+                          nullable: true
+                        RESTING_MAX_HR:
+                          type: number
+                          nullable: true
+                        RESTING_MAX_HRV:
+                          type: number
+                          nullable: true
+                        RESTING_MAX_HRV_RMSSD:
+                          type: number
+                          nullable: true
+                        RESTING_MIN_HR:
+                          type: number
+                          nullable: true
+                        RESTING_MIN_HRV:
+                          type: number
+                          nullable: true
+                        RESTING_MIN_HRV_RMSSD:
+                          type: number
+                          nullable: true
+                        RESTING_SITTING_DURATION:
+                          type: number
+                          nullable: true
+                        RESTING_STANDING_DURATION:
+                          type: number
+                          nullable: true
+                        RESTING_UPRIGHT_POSTURE_DURATION:
+                          type: number
+                          nullable: true
+                        SENSOR_WEAR_DURATION:
+                          type: number
+                          nullable: true
+                        SLEEPING_AVG_HR:
+                          type: number
+                          nullable: true
+                        SLEEPING_AVG_HRV:
+                          type: number
+                          nullable: true
+                        SLEEPING_AVG_HRV_RMSSD:
+                          type: number
+                          nullable: true
+                        SLEEPING_AVG_RESPIRATION:
+                          type: number
+                          nullable: true
+                        SLEEPING_COMBINED_ACT_COUNT:
+                          type: number
+                          nullable: true
+                        SLEEPING_DURATION:
+                          type: number
+                          nullable: true
+                        SLEEPING_MAX_HR:
+                          type: number
+                          nullable: true
+                        SLEEPING_MAX_HRV:
+                          type: number
+                          nullable: true
+                        SLEEPING_MAX_HRV_RMSSD:
+                          type: number
+                          nullable: true
+                        SLEEPING_MAX_RESPIRATION:
+                          type: number
+                          nullable: true
+                        SLEEPING_MIN_HR:
+                          type: number
+                          nullable: true
+                        SLEEPING_MIN_HRV:
+                          type: number
+                          nullable: true
+                        SLEEPING_MIN_HRV_RMSSD:
+                          type: number
+                          nullable: true
+                        SLEEPING_MIN_RESPIRATION:
+                          type: number
+                          nullable: true
+                        SLEEPING_ONSET_TS:
+                          type: number
+                          nullable: true
+                        SLEEPING_POSTURE_TRANSITIONS:
+                          type: number
+                          nullable: true
+                        SLEEPING_WAKE_TS:
+                          type: number
+                          nullable: true
+                   
+                  libraryConfigId:
+                    type: string
+                  errorTypes:
+                    type: array        
+                    items:
+                      type: object
+          example:
+            items:
+            - dayStartMsUtc: 1569283200000
+              dataStartTs: 1569297600000
+              dataStopTs: 1569384000000
+              subjectTz: "US/Eastern"
+              subjectTzOffset: "-04:00"
+              metrics:
+               MOVING_AVG_GAIT_CADENCE: 114.86092715231788
+               MOVING_AVG_HR: 94.82356325655586 
+               MOVING_AVG_HRV: 2.8701111665563075
+               MOVING_AVG_HRV_RMSSD: 52.94620479295574
+               MOVING_COMBINED_ACT_COUNT: null
+               MOVING_DURATION: 4350.0
+               MOVING_MAX_HR: 115.83011583011583
+               MOVING_MAX_HRV: 11.78649139689227
+               MOVING_MAX_HRV_RMSSD: 275.3571234861111
+               MOVING_MIN_HR: 66.62983507173529
+               MOVING_MIN_HRV: 0.8518869758846199
+               MOVING_MIN_HRV_RMSSD: 7.222649560006817
+               MOVING_OTHER_DURATION: 2085.0
+               MOVING_STEPS: 4336.0
+               MOVING_WALKING_DURATION: 2265.0
+               RESTING_AVG_HR: 76.78098604492533
+               RESTING_AVG_HRV: 2.6197195198934224
+               RESTING_AVG_HRV_RMSSD: 56.75568018911682
+               RESTING_COMBINED_ACT_COUNT: null
+               RESTING_DURATION: 33985.0
+               RESTING_LEANING_POSTURE_DURATION: 27280.0
+               RESTING_LYING_DURATION: 4210.0
+               RESTING_MAX_HR: 115.83011583011583
+               RESTING_MAX_HRV: 15.197214031676774
+               RESTING_MAX_HRV_RMSSD: 367.1216873644669
+               RESTING_MIN_HR: 64.1711229946524
+               RESTING_MIN_HRV: 0.48591275313726695
+               RESTING_MIN_HRV_RMSSD: 7.222649560006817
+               RESTING_SITTING_DURATION: 22680.0
+               RESTING_STANDING_DURATION: 7095.0
+               RESTING_UPRIGHT_POSTURE_DURATION: 6705.0
+               SENSOR_WEAR_DURATION: 42175.0
+               SLEEPING_AVG_HR: null
+               SLEEPING_AVG_HRV: null
+               SLEEPING_AVG_HRV_RMSSD: null
+               SLEEPING_AVG_RESPIRATION: null
+               SLEEPING_COMBINED_ACT_COUNT: null
+               SLEEPING_DURATION: 0.0
+               SLEEPING_MAX_HR: null
+               SLEEPING_MAX_HRV: null
+               SLEEPING_MAX_HRV_RMSSD: null
+               SLEEPING_MAX_RESPIRATION: null
+               SLEEPING_MIN_HR: null
+               SLEEPING_MIN_HRV: null
+               SLEEPING_MIN_HRV_RMSSD: null
+               SLEEPING_MIN_RESPIRATION: null
+               SLEEPING_ONSET_TS: null
+               SLEEPING_POSTURE_TRANSITIONS: null
+               SLEEPING_WAKE_TS: null
+              libraryConfigId: fdd051b8-d753-11e6-ab51-34363bc84032
+              errorTypes: []

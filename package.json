@@ -1,0 +1,13 @@
+{
+  "name": "sdp",
+  "version": "1.0.0",
+  "description": "Packaged externals for sdp",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "id64": "^1.2.3",
+    "computer-name": "^0.1.0",
+    "ssh2-sftp-client": "^5.1.2",
+    "fs-extra": "^9.0.1"
+  }
+}

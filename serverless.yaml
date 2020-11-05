@@ -1,0 +1,8 @@
+service: sftp-function
+description: "My NodeJS example function"
+provider:
+  name: triggermesh
+functions:
+  example-module:
+    source: aws/lambda/common/src/handler.sayHelloAsync
+    runtime: knative-node10-runtime
